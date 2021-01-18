@@ -1,0 +1,14 @@
+{
+  "name": "compressor-img",
+  "version": "1.0.0",
+  "description": "Altera altura e largura e diminui o espaço que a imagem ocupa.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "sharp": "^0.27.0"
+  }
+}
