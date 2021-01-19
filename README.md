@@ -1,6 +1,6 @@
 <h1>Compressor de Imagens</h1>
 
-<h1>Sobre:<h1> um app que você consegue redimencionar o tamanho da sua imagem.
+<h1>Sobre:<h1> um app que você consegue redimencionar o tamanho da sua imagem e qualidade.
 
 <h1>Tecnologias</h1> Java Script e Node
 

@@ -9,6 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "gifsicle": "^5.1.0",
+    "pngquant-bin": "^6.0.0",
     "sharp": "^0.27.0"
+  },
+  "devDependencies": {
+    "compress-images": "^1.9.5"
   }
 }
