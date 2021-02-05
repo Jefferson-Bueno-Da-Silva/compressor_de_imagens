@@ -1,39 +1,56 @@
-let sharp =  require('sharp')
-let compress_images = require('compress-images')
+let compress_images = require('compress-images');
+const fs = require('fs');
 
 let path = process.argv[2]
-let widht = Number(process.argv[3])
-let height = Number(process.argv[4])
+let outPath = process.argv[3];
 
-function resize (inputPath,outputPath, widht, height){
+async function compress(pathInput,outputPath){
+    
+    function readDir(dir){
 
-    sharp(inputPath).resize({width:widht , height:height})
-    .toFile(outputPath,(error)=>{
+        let arquivos = [];
+        let struct = []
+        
 
-        if(error){
-            console.log(error)
-        }else{
-            console.log(outputPath)
-            console.log("imagem redimencionada com sucesso")
-            compress(outputPath, "./compressed/")
+        fs
+            .readdirSync(dir)
 
-        }
-    })
-}
+            .sort((a, b) => fs.statSync(dir +"/"+ a).mtime.getTime() - fs.statSync(dir +"/"+ b).mtime.getTime()) //É AQUI QUE A MÁGICA ACONTECE
+            .forEach(file => {
 
-function compress(pathInput,outputPath){
-    compress_images(pathInput, outputPath, { compress_force: false, statistic: true, autoupdate: true }, false,
-        { jpg: { engine: "mozjpeg", command: ["-quality", "60"] } },
-        { png: { engine: "pngquant", command: ["--quality=20-50", "-o"] } },
-        { svg: { engine: "svgo", command: "--multipass" } },
-        { gif: { engine: "gifsicle", command: ["--colors", "64", "--use-col=web"] } },
-        function (error, completed, statistic) {
-        console.log("-------------");
-        console.log(error);
-        console.log(completed);
-        console.log(statistic);
-        console.log("-------------");
+                if( fs.lstatSync(dir+"/"+file).isFile() ){
+                    arquivos.push(file)
+                }else if( fs.lstatSync(dir+"/"+file).isDirectory() ){
+                    // arquivos[file] = readDir(dir+"/"+file)
+                    for(let i = 0; i< readDir(dir+"/"+file).length; i++){
+                        let teste = readDir(dir+"/"+file)[i]
+                        arquivos.push(file + '/' + teste);
+                    }
+                }
+            })
+        return arquivos
+    }
+
+    let dir = readDir(pathInput)
+    
+    for(var i = 0; i < dir.length; i++){
+
+        console.log(dir[i]);
+        
+        compress_images(pathInput + dir[i], outputPath + dir[i], { compress_force: false, statistic: true, autoupdate: true }, false,
+            { jpg: { engine: "mozjpeg", command: ["-quality", "60"] } },
+            { png: { engine: "pngquant", command: ["--quality=20-50", "-o"] } },
+            { svg: { engine: "svgo", command: "--multipass" } },
+            { gif: { engine: "gifsicle", command: ["--colors", "64", "--use-col=web"] } },
+            function (error, completed, statistic) {
+            console.log("-------------");
+            console.log(error);
+            console.log(completed);
+            console.log(statistic);
+            console.log("-------------");
         });
+    }
 }
+compress(path, outPath);
 
-resize(path,'./temp/output_resize.jpg',widht,height)
+// node app.js C:/Users/jeffe/nodejs/Compressor-de-Imagens/img/ C:/Users/jeffe/nodejs/Compressor-de-Imagens/compressed/
